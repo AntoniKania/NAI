@@ -1,11 +1,12 @@
 import numpy as np
 from easyAI import TwoPlayerGame, Human_Player, AI_Player, Negamax
 
-pos2string = lambda ab: "ABCDEFGH"[ab[0]] + str(ab[1] + 1)
-string2pos = lambda s: np.array(["ABCDEFGH".index(s[0]), int(s[1])-1])
+pos2string = lambda ab: chr(65 + ab[0]) + str(ab[1] + 1)
+string2pos = lambda s: np.array([ord(s[0]) - 65, int(s[1]) - 1])
+
 
 class Chomp(TwoPlayerGame):
-    def __init__(self, players, board_size=(5, 5)):
+    def __init__(self, players, board_size):
         self.players = players
         self.board_size = board_size
         self.board = np.zeros(board_size, dtype=int)
@@ -14,7 +15,7 @@ class Chomp(TwoPlayerGame):
     def possible_moves(self):
         moves = [pos2string([r, c]) for r in range(self.board_size[0])
                  for c in range(self.board_size[1]) if self.board[r, c] == 0]
-        return [move for move in moves if move != "A1"]
+        return [move for move in moves if move != pos2string([0, 0])]
 
     def make_move(self, pos):
         row, col = string2pos(pos)
@@ -31,26 +32,28 @@ class Chomp(TwoPlayerGame):
                 self.board[x, y] = n
 
     def show(self):
-        print('\n' + '\n'.join(['  1 2 3 4 5'] +
-              ['ABCDE'[k] +
-               ' ' + ' '.join(['O' if self.board[k, i] == 0 else 'X'
-               for i in range(self.board_size[1])])
-               for k in range(self.board_size[0])] + ['']))
+        row_labels = ''.join(chr(65 + i) for i in range(self.board_size[0]))
+        header = '  ' + ' '.join(str(i + 1) for i in range(self.board_size[1]))
+
+        print('\n' + '\n'.join([header] +
+                               [row_labels[k] +
+                                ' ' + ' '.join(['O' if self.board[k, i] == 0 else 'X'
+                                                for i in range(self.board_size[1])])
+                                for k in range(self.board_size[0])] + ['']))
 
     def lose(self):
         return self.possible_moves() == []
 
     def scoring(self):
-        if self.lose():
-            return -100
-        else:
-            return 0
+        return -100 if self.lose() else 0
 
     def is_over(self):
         return self.lose()
 
+
 if __name__ == "__main__":
     ai_algo = Negamax(6)
-    game = Chomp([Human_Player(), AI_Player(ai_algo)], (5, 5))
+    board_size = (4, 7)
+    game = Chomp([Human_Player(), AI_Player(ai_algo)], board_size)
     game.play()
     print(f"Player {game.current_player} loses.")
