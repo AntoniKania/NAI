@@ -1,8 +1,59 @@
 import numpy as np
 from easyAI import TwoPlayerGame, Human_Player, AI_Player, Negamax
 
-pos2string = lambda ab: chr(65 + ab[0]) + str(ab[1] + 1)
-string2pos = lambda s: np.array([ord(s[0]) - 65, int(s[1]) - 1])
+def coordinatesToString(coordinates):
+    """
+    Converts a pair of numeric coordinates into a string representation.
+
+    The function takes an array of two integers, where the first integer represents
+    the column index and the second integer represents the row index.
+    It converts the coordinates into a string that is user-frendly to type in
+    the program, with contains colum (as a uppercase char) and row (as an integer)
+    For example: "A1", "B7", "C9".
+
+    Args:
+        coordinates (array): A pair of integers representing the position, where
+                            coordinates[0] is column index, and coordinates[1]
+                            is the row index.
+
+    Returns:
+        str: A string representation of the coordinates, where the column is a letter
+             (starting from 'A') and the row is an integer.
+
+    Example:
+        >>> coordinatesToString([0, 0])
+        'A1'
+        >>> coordinatesToString([2, 4])
+        'C5'
+    """
+    return chr(65 + coordinates[0]) + str(coordinates[1] + 1)
+
+def stringToCoordinates(s):
+    """
+    Converts a string representation of coordinates into a pair of numeric values.
+
+    The function takes a string where the first character is an uppercase letter 
+    representing the column (e.g., 'A' for 0, 'B' for 1, etc.), and the second 
+    character is a 1-based number representing the row. It returns an array with 
+    the column index and the row index. Function works correctlly when it's max 26 rows 
+    and 9 columns - eg single character for coordinate
+
+    Args:
+        s (str): A string representing the coordinates, where the first character 
+                 is a letter (column), and the second character is an integer (row,
+                 up to 9)
+
+    Returns:
+        array: A pair of integers where the first value is column index 
+               and the second value is the row index.
+
+    Example:
+        >>> stringToCoordinates('A1')
+        (0, 0)
+        >>> stringToCoordinates('C5')
+        (2, 4)
+    """
+    return (ord(s[0]) - 65, int(s[1]) - 1)
 
 
 class Chomp(TwoPlayerGame):
@@ -13,12 +64,33 @@ class Chomp(TwoPlayerGame):
         self.current_player = 1
 
     def possible_moves(self):
-        moves = [pos2string([r, c]) for r in range(self.board_size[0])
+        """
+        Calculates possible moves that are correct from game logic perspective
+
+        This method returns a list of all available (unoccupied) positions on the board.
+        Result is converted to a string format using the `coordinatesToString` function.
+        The resulting list excludes the position corresponding to [0, 0].
+
+        Returns:
+            array: A array of strings representing the valid moves, formated
+            as string (for ex. "A2")
+
+        Example:
+            If the board is a 5x3 grid and the current state of the board is:
+            
+            [[0, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1]]
+            
+            >>> possible_moves()
+            ['A2', 'A3']
+        """
+        moves = [coordinatesToString([r, c]) for r in range(self.board_size[0])
                  for c in range(self.board_size[1]) if self.board[r, c] == 0]
-        return [move for move in moves if move != pos2string([0, 0])]
+        return [move for move in moves if move != coordinatesToString([0, 0])]
 
     def make_move(self, pos):
-        row, col = string2pos(pos)
+        row, col = stringToCoordinates(pos)
         for r in range(row, self.board_size[0]):
             for c in range(col, self.board_size[1]):
                 self.board[r, c] = 1
