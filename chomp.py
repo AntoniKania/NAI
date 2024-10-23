@@ -90,20 +90,68 @@ class Chomp(TwoPlayerGame):
         return [move for move in moves if move != coordinatesToString([0, 0])]
 
     def make_move(self, pos):
+        """
+        Fills board with range based on pos argument
+
+        This method save 1 into the board array based on coordinate pased in
+        pos argument. It iterates through all cells in the board starting
+        from the specified position
+
+        Returns:
+            none
+
+        Example:
+            If the board is a 5x3 grid and the current state of the board is:
+            
+            [[0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 1],
+            [0, 0, 0, 1, 1]]
+
+            Executing method with this parameter:
+
+            >>> self.make_move('A4')
+            
+            Will result to modify board attribute to:
+
+            [[0, 0, 0, 1, 1],
+            [0, 0, 0, 1, 1],
+            [0, 0, 0, 1, 1]]
+
+        """
         row, col = stringToCoordinates(pos)
         for r in range(row, self.board_size[0]):
             for c in range(col, self.board_size[1]):
                 self.board[r, c] = 1
 
-    def ttentry(self):
-        return tuple([tuple(row) for row in self.board])
-
-    def ttrestore(self, entry):
-        for x, row in enumerate(entry):
-            for y, n in enumerate(row):
-                self.board[x, y] = n
-
     def show(self):
+        """
+        Displays the current state of the board.
+
+        The method prints the board as a grid where rows are labeled with letters (starting from 'A') 
+        and columns are labeled with numbers (starting from '1'). Each cell on the board is represented 
+        by an 'O' if it is unoccupied, and an 'X' if it is already taken.
+
+        Returns:
+            none
+
+        Example:
+            If the board is a 5x3 grid and the current state of the board is:
+            
+            [[0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 1],
+            [0, 0, 0, 1, 1]]
+
+            Executing method:
+
+            >>> self.show()
+
+            Will result to print this on sandard output:
+
+              1 2 3 4 5
+            A O 0 O 0 0
+            B O O 0 X X
+            C 0 O O X X
+        """
         row_labels = ''.join(chr(65 + i) for i in range(self.board_size[0]))
         header = '  ' + ' '.join(str(i + 1) for i in range(self.board_size[1]))
 
