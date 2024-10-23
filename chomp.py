@@ -65,7 +65,8 @@ class Chomp(TwoPlayerGame):
 
     def possible_moves(self):
         """
-        Calculates possible moves that are correct from game logic perspective
+        Calculates possible moves that are correct from game logic perspective.
+        Mandatory for easyAI implementation.
 
         This method returns a list of all available (unoccupied) positions on the board.
         Result is converted to a string format using the `coordinatesToString` function.
@@ -91,7 +92,8 @@ class Chomp(TwoPlayerGame):
 
     def make_move(self, pos):
         """
-        Fills board with range based on pos argument
+        Fills board with range based on pos argument.
+        Mandatory for easyAI implementation.
 
         This method save 1 into the board array based on coordinate pased in
         pos argument. It iterates through all cells in the board starting
@@ -127,8 +129,9 @@ class Chomp(TwoPlayerGame):
         """
         Displays the current state of the board.
 
-        The method prints the board as a grid where rows are labeled with letters (starting from 'A') 
-        and columns are labeled with numbers (starting from '1'). Each cell on the board is represented 
+        The method prints the board as a grid where rows are labeled with
+        letters (starting from 'A') and columns are labeled with numbers
+        (starting from '1'). Each cell on the board is represented 
         by an 'O' if it is unoccupied, and an 'X' if it is already taken.
 
         Returns:
@@ -161,17 +164,77 @@ class Chomp(TwoPlayerGame):
                                                 for i in range(self.board_size[1])])
                                 for k in range(self.board_size[0])] + ['']))
 
-    def lose(self):
+    def is_over(self):
+        """
+        Checks if the player has lost the game. Mandatory for easyAI
+        implementation
+
+        The method determines if there are no possible moves left by calling
+        the `possible_moves` method. If the list is empty, it means the player
+        has no valid moves eg. he lost.
+
+        Returns:
+            bool: `True` if there are no possible moves left
+            (indicating a loss), `False` otherwise.
+
+        Example:
+            >>> self.possible_moves()  # returns []
+            >>> self.is_over()
+            True
+
+            >>> self.possible_moves()  # returns ['A2', 'B3']
+            >>> self.is_over()
+            False
+        """
         return self.possible_moves() == []
 
     def scoring(self):
-        return -100 if self.lose() else 0
+        '''
+        Gives a score to the current game. Mandatory for easyAI implementation
 
-    def is_over(self):
-        return self.lose()
+        Returns:
+            integer: -100 if there are no possible moves left
+            (indicating a loss), 0 otherwise.
+         Example:
+            If there are no available moves left on the board return `True`
+            otherwise - `False`. 
+
+            >>> self.is_over()  # returns true
+            >>> self.scoring()
+            -100
+
+            >>> self.is_over()  # returns false
+            >>> self.scoring()
+            0
+        '''
+        return -100 if self.is_over() else 0
 
 
 if __name__ == "__main__":
+    """
+    Entry point of the script for running a game of Chomp with a human player and an AI player.
+
+    The main idea of game is chomping a piece of chocolate by 2 players. The
+    player gives the coordinates of the upper left corner of the chocolate bar
+    that he wants to eat. The opposing player does the same. They do this in
+    loop unless the last square of chocolate is present. The person who is
+    forced to take the last piece of chocolate lose.
+
+    - Initializes an AI player with the Negamax algorithm, set to a depth of 6 for decision-making.
+    - The game board is created with a size of 4 rows and 7 columns.
+    - Two players are initialized: one human player (`Human_Player()`) and one AI player (`AI_Player(ai_algo)`).
+    - The game is played using the `Chomp` game class's `play()` method.
+    - After the game concludes, it prints a message declaring the losing player.
+
+    Example:
+        Running this script will initiate the game with the following setup:
+        - A 4x7 board for the game of Chomp.
+        - One human player and one AI player.
+        After the game ends, it will output the losing player, such as:
+
+        Player 1 loses.
+
+    """
     ai_algo = Negamax(6)
     board_size = (4, 7)
     game = Chomp([Human_Player(), AI_Player(ai_algo)], board_size)
