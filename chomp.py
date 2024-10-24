@@ -1,3 +1,15 @@
+"""
+Chomp Game Implementation using the easyAI library.
+
+Chomp is a simple two-player game. For more information, see:
+https://en.wikipedia.org/wiki/Chomp
+
+Authors: Antoni Kania (s29400), Rafał Sojecki (s26286)
+
+Instructions on how to run the game are available in the README.md file.
+An overview of the game flow is described in the Main entry point: See the `__main__` section at the end of the file.
+"""
+
 import numpy as np
 from easyAI import TwoPlayerGame, Human_Player, AI_Player, Negamax
 
