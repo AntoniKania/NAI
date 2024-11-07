@@ -1,35 +1,53 @@
+"""
+This project simulates an automatic irrigation system using fuzzy logic in Python.
+It includes a real-time simulation with adjustable sliders for soil moisture, rain intensity, and temperature,
+allowing you to see immediate changes in irrigation volume.
+Visual feedback, including sunlight, raindrops, and water flow, reflects environmental conditions dynamically.
+
+Authors: Antoni Kania (s29400), Rafał Sojecki (s26286)
+
+Instructions on how to run the game are available in the main README.md file.
+"""
+
 import pygame
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
-WHITE = (255, 255, 255)
-DARK_BLUE = (0, 102, 204)
-LIGHT_GREY = (200, 200, 200)
-DARK_GREY = (100, 100, 100)
-BLUE = (0, 128, 255)
-
-
-def initialize_pygame():
-    """Initialize Pygame and set up main colors, clock, and screen."""
-    pygame.init()
-    colors = {
-        'WHITE': (255, 255, 255),
-        'DARK_BLUE': (0, 102, 204),
-        'LIGHT_GREY': (200, 200, 200),
-        'DARK_GREY': (100, 100, 100),
-        'BLUE': (0, 128, 255)
-    }
-    screen = pygame.display.set_mode((800, 600))
-    clock = pygame.time.Clock()
-    return screen, clock, colors
-
-
 def setup_fuzzy_system():
-    """Define fuzzy variables, memberships, and control rules for the irrigation system."""
+    """
+    Sets up the fuzzy logic system for the irrigation control system.
+
+    This function defines the input and output variables and their associated
+    membership functions for the fuzzy control system:
+
+    Inputs:
+    - soil_moisture [%] - Defines membership functions 'dry', 'optimal', and 'wet',
+      using trapezoidal shapes to cover different levels of soil moisture.
+    - rain_intensity [mm/h] - Defines membership functions 'none', 'light', 'moderate',
+      and 'heavy', representing various intensities of rainfall. Triangular shapes are
+      used to focus values around specific central points, while trapezoidal functions
+      cover broader ranges.
+    - temperature [°C] - Defines membership functions 'cold', 'moderate', and 'hot'
+      using trapezoidal shapes to model different temperature ranges.
+
+    Output:
+    - irrigation_volume [m³] - Defines membership functions 'none', 'small', 'medium',
+      and 'large', corresponding to different irrigation levels. These are represented
+      by triangular and trapezoidal shapes to reflect the range of possible irrigation needs.
+
+    Membership functions determine how each variable maps onto linguistic categories
+    through varying shapes (triangular, trapezoidal). This flexibility enables
+    the system to handle continuous real-world data and interpret it into actionable
+    irrigation volume levels.
+
+    Returns:
+        control_system_simulation (skfuzzy.control.ControlSystemSimulation): The
+        fuzzy control system for managing irrigation volume based on input conditions.
+    """
     soil_moisture_range = np.arange(0, 101, 1)
     rain_intensity_range = np.arange(0, 51, 1)
-    temperature_range = np.arange(-10, 41, 1)
+    temperature_range = np.arange(0, 41, 1)
     irrigation_volume_range = np.arange(0, 51, 1)
 
     soil_moisture = ctrl.Antecedent(soil_moisture_range, 'soil_moisture')
@@ -46,7 +64,7 @@ def setup_fuzzy_system():
     rain_intensity['moderate'] = fuzz.trimf(rain_intensity_range, [20, 30, 40])
     rain_intensity['heavy'] = fuzz.trapmf(rain_intensity_range, [30, 40, 50, 50])
 
-    temperature['cold'] = fuzz.trapmf(temperature_range, [-10, -10, 5, 15])
+    temperature['cold'] = fuzz.trapmf(temperature_range, [0, 0, 5, 15])
     temperature['moderate'] = fuzz.trapmf(temperature_range, [10, 20, 25, 30])
     temperature['hot'] = fuzz.trapmf(temperature_range, [25, 30, 40, 40])
 
@@ -78,7 +96,23 @@ def setup_fuzzy_system():
 
 
 def draw_slider(screen, label, x, y, current_value, min_value, max_value, colors):
-    """Draw a slider with label and current value on the screen."""
+    """
+    Draws an interactive slider for input variables on the screen.
+
+    The slider represents a range of values (min to max) for each input variable
+    (e.g., soil moisture, temperature), allowing real-time adjustments. It also
+    displays the current value with a label.
+
+    Args:
+        screen (Surface): The Pygame screen surface to draw the slider on.
+        label (str): The label for the slider (e.g., "soil moisture").
+        x (int): X-coordinate for the slider’s starting point.
+        y (int): Y-coordinate for the slider’s starting point.
+        current_value (int): The slider's current value.
+        min_value (int): Minimum possible slider value.
+        max_value (int): Maximum possible slider value.
+        colors (dict): Dictionary of color values for slider elements.
+    """
     pygame.draw.line(screen, colors['LIGHT_GREY'], (x, y), (x + 100, y), 5)
     handle_x = x + int((current_value - min_value) / (max_value - min_value) * 100)
     pygame.draw.circle(screen, colors['DARK_BLUE'], (handle_x, y), 10)
@@ -86,14 +120,43 @@ def draw_slider(screen, label, x, y, current_value, min_value, max_value, colors
     label_surface = font.render(f"{label}: {current_value}", True, colors['DARK_GREY'])
     screen.blit(label_surface, (x - 30, y - 30))
 
+def initialize_pygame():
+    """
+    Initializes Pygame settings and main display parameters.
+
+    Sets up colors and screen dimensions, returning variables for further use
+    in the simulation interface.
+
+    Returns:
+        tuple: Contains the Pygame screen, clock, and a dictionary of color settings.
+    """
+    pygame.init()
+    colors = {
+        'WHITE': (255, 255, 255),
+        'DARK_BLUE': (0, 102, 204),
+        'LIGHT_GREY': (200, 200, 200),
+        'DARK_GREY': (100, 100, 100),
+        'BLUE': (0, 128, 255)
+    }
+    screen = pygame.display.set_mode((800, 600))
+    clock = pygame.time.Clock()
+    return screen, clock, colors
 
 def run_simulation():
-    """Main simulation loop for Pygame interaction with the fuzzy irrigation system."""
+    """
+    Runs the main simulation loop for the fuzzy irrigation system in Pygame.
+
+    Initializes the fuzzy control system and draws input sliders (soil moisture,
+    rain intensity, temperature). As sliders are adjusted, the irrigation volume
+    output is computed and visualized on-screen in real-time.
+
+    The loop continues until the Pygame window is closed.
+    """
     screen, clock, colors = initialize_pygame()
     simulation = setup_fuzzy_system()
 
     slider_positions = {'soil_moisture': 50, 'rain_intensity': 10, 'temperature': 20}
-    slider_min_max = {'soil_moisture': (0, 100), 'rain_intensity': (0, 50), 'temperature': (-10, 40)}
+    slider_min_max = {'soil_moisture': (0, 100), 'rain_intensity': (0, 50), 'temperature': (0, 40)}
     slider_x_pos = {'soil_moisture': 50, 'rain_intensity': 250, 'temperature': 420}
     slider_y_pos = 550
 
@@ -112,7 +175,6 @@ def run_simulation():
         screen.blit(pump_img, (50, 250))
 
         for label, (min_value, max_value) in slider_min_max.items():
-            current_value = slider_positions[label]
             x = slider_x_pos[label]
 
             if mouse_pressed[0] and abs(mouse_pos[1] - slider_y_pos) < 15 and x < mouse_pos[0] < x + 100:
@@ -140,7 +202,7 @@ def run_simulation():
         start_pos = (260, 320)
         end_pos = (510, 320)
         irrigation_volume_val = simulation.output['irrigation_volume']
-        pygame.draw.line(screen, DARK_BLUE, start_pos, end_pos, int(irrigation_volume_val))
+        pygame.draw.line(screen, colors['DARK_BLUE'], start_pos, end_pos, int(irrigation_volume_val))
         font = pygame.font.Font(None, 36)
         irrigation_text = font.render(f"Irrigation Volume: {irrigation_volume_val:.2f} m^3", True, colors['DARK_BLUE'])
         screen.blit(irrigation_text, (50, 50))
