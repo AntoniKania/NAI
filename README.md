@@ -1,6 +1,6 @@
 # Mega Repo for AI Tools classes projects
 
-Indivdulas projects have their own readme files that include deatails ablout each project.
+This repository contains various projects developed for AI Tools classes. Each individual project has its own README file, which includes detailed information and instructions about the specific project.
 
 ## Projects:
 
