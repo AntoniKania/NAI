@@ -16,3 +16,6 @@ This project demonstrates a simulated automatic irrigation system using fuzzy lo
 ![](./screenshots/irrigation_small.png)
 ![](./screenshots/irrigation_medium.png)
 ![](./screenshots/irrigation_large.png)
+
+# Video
+![](./simulation.gif)
