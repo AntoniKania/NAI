@@ -26,33 +26,33 @@ movies_hca['cluster'] = clusters_hca
 def recommend(movie_titles, max_number_of_recommendations=5, type='kmeans', worst=False):
     if type == 'hca':
         movies['cluster'] = movies_hca['cluster']
-    recommendations_list = []
+    movie_ids = []
     for movie_title in movie_titles:
         movie_idx = movies[movies['title'].str.contains(movie_title)].index[0]
-        cluster = movies.iloc[movie_idx]['cluster']
+        movie_ids.append(movie_idx)
+    
+    clusters = movies.iloc[movie_ids]['cluster'].unique()
         
-        similar_movies = movies[movies['cluster'] == cluster].index
-        similar_movies = similar_movies.difference([movie_idx])
+    similar_movies = movies[movies['cluster'].isin(clusters)].index
+    similar_movies = similar_movies.difference(movie_ids)
 
-        recommendations = movies.loc[similar_movies]
-        recommendations_list.append(recommendations[['title', 'rate', 'genres']])   
-    recommend_movies = pd.concat(recommendations_list, ignore_index=True) if recommendations_list else pd.DataFrame(columns=['title', 'rate', 'genres'])
+    recommend_movies = movies.loc[similar_movies]
+
     if worst:
-        sorted_recommend_movies = recommend_movies.sort_values(by='rate')
-        filtered_recommend_movies = sorted_recommend_movies[sorted_recommend_movies['rate'] <= 7]
+        filtered_recommend_movies = recommend_movies[recommend_movies['rate'] <= 7]
     else:
-        sorted_recommend_movies = recommend_movies.sort_values(by='rate', ascending=False)
-        filtered_recommend_movies = sorted_recommend_movies[sorted_recommend_movies['rate'] > 7]
+        filtered_recommend_movies = recommend_movies[recommend_movies['rate'] > 7]
     
     limit_df = filtered_recommend_movies.head(max_number_of_recommendations)
     return limit_df
 
 test_array = ['Django', 'Cowboy Bebop', 'Powrót do przyszłości']
+number_of_recomendations = 10
 print("K-means recommended movies:")
-print(recommend(test_array, 5, 'kmeans'))
+print(recommend(test_array, number_of_recomendations, 'kmeans'))
 print("K-means not recommended movies:")
-print(recommend(test_array, 5, 'kmeans', True))
+print(recommend(test_array, number_of_recomendations, 'kmeans', True))
 print("Hierarchical Clustering Algorithm recommended movies:")
-print(recommend(test_array, 5, 'hca'))
+print(recommend(test_array, number_of_recomendations, 'hca'))
 print("Hierarchical Clustering Algorithm not recommended movies:")
-print(recommend(test_array, 5, 'hca', True))
+print(recommend(test_array, number_of_recomendations, 'hca', True))
