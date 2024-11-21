@@ -77,13 +77,13 @@ def get_movie_object(title):
         print(f"Error fetching data for {title}: {e}")
         return None
 
-def fetch_movie_genres(title):
+def get_movie_genres(movie_id, media_type):
     """
     Fetches genres of movie from themoviedb api.
 
     Sends GET requests to the themoviedb and fetches metadata of
-    movie based on title. It queries the API for the specified `title` in
-    Polish (`pl-PL` language) and retrieves the search results. Returns genres
+    movie based on title. It queries the API for the specified `id` in
+    and retrieves the search results. Returns genres
     of movie if avaliable. Authentication by API_KEY
 
     Args:
@@ -101,75 +101,17 @@ def fetch_movie_genres(title):
         
     """
     try:
-        movie = get_movie_object(title)
+        details_url = f"{BASE_URL}/{media_type}/{movie_id}"
+        details_params = {
+            'api_key': API_KEY,
+            'language': 'pl-PL'
+        }
+        details_response = requests.get(details_url, params=details_params)
+        details_response.raise_for_status()
+        movie_details = details_response.json()
 
-        if movie:
-            movie_id = movie['id']
-            media_type = movie['media_type']
-            details_url = f"{BASE_URL}/{media_type}/{movie_id}"
-            details_params = {
-                'api_key': API_KEY,
-                'language': 'pl-PL'
-            }
-            details_response = requests.get(details_url, params=details_params)
-            details_response.raise_for_status()
-            movie_details = details_response.json()
-
-            genres = [genre['name'] for genre in movie_details.get('genres', [])]
-            return genres
-        else:
-            return []
+        genres = [genre['name'] for genre in movie_details.get('genres', [])]
+        return genres
     except Exception as e:
         print(f"Error fetching data for {title}: {e}")
         return []
-
-def get_movie_genres():
-    """
-    Add to movie dataset genre information and saves it.
-
-    Reads a CSV file containing a list of movies, fetches the genres for each
-    movie, and adds the genres as a new column. The extended dataset is then
-    saved to a new CSV file.
-
-    Input and output file paths are hardcoded:
-    - Input file: 'resources/movies.csv'
-    - Output file: 'resources/movies_with_genres.csv'
-
-    Returns:
-        None
-
-    Raises:
-        ValueError: If the input CSV does not contain a `title` column.
-
-    Example:
-        Given an input CSV with a `title` column:
-        ```
-        title,rate
-        Whiplash,10
-        Dziennik Bridget Jones,1
-        ```
-
-        The output CSV will include a `genres` column:
-        ```
-        title,rate,genres
-        Whiplash,10,"Dramat, Muzyczny"
-        Dziennik Bridget Jones,1,"Komedia, Romans, Dramat"
-        ```
-
-    Output:
-        A new CSV file named 'resources/movies_with_genres.csv' with the
-        updated data.
-        String on standard output on success: "Genres have been added.
-        Output saved to resources/movies_with_genres.csv"
-    """
-
-    input_csv_path = 'resources/movies.csv'
-    output_csv_path = 'resources/movies_with_genres.csv'
-    movies_df = pd.read_csv(input_csv_path)
-    if 'title' not in movies_df.columns:
-        raise ValueError("The input CSV must have a 'Title' column.")
-    movies_df['genres'] = movies_df['title'].apply(lambda title: ', '.join(fetch_movie_genres(title)))
-    movies_df.to_csv(output_csv_path, index=False)
-    print(f"Genres have been added. Output saved to {output_csv_path}.")
-
-get_movie_genres()

@@ -45,35 +45,38 @@ def recommend_movies(user_movie_matrix, kmeans, user_id, top_n=5):
     return recommendations, anti_recommendations
 
 
-# Example usage
-# Assuming `data` is your loaded and reshaped DataFrame:
-data = pd.read_csv("resources/questionary_list.csv", header=None)
-count = data.shape[0]
-long_data = []
+def getRecomendations(user_id=0):
 
-# Iterate over each row to parse user and movie-rating pairs
-for _, row in data.iterrows():
-    user = row.iloc[0]  # The second column contains the user's name
-    pairs = row.iloc[1:]  # Skip the first two columns for movie-rating pairs
+    # Assuming `data` is your loaded and reshaped DataFrame:
+    data = pd.read_csv("resources/questionary_list.csv", header=None)
+    count = data.shape[0]
+    long_data = []
 
-    #Process movie-rating pairs
-    for i in range(count - 1, len(pairs), 2):  # Step by 2 to get movie-rating pairs
-        movie = pairs[i]
-        rating = pairs[i + 1]
+    # Iterate over each row to parse user and movie-rating pairs
+    for _, row in data.iterrows():
+        user = row.iloc[0]  # The second column contains the user's name
+        pairs = row.iloc[1:]  # Skip the first two columns for movie-rating pairs
 
-        if pd.notna(movie) and pd.notna(rating):  # Skip if either is NaN
-            long_data.append({"User": user, "Movie": movie, "Rating": float(rating)})
+        #Process movie-rating pairs
+        for i in range(count - 1, len(pairs), 2):  # Step by 2 to get movie-rating pairs
+            movie = pairs[i]
+            rating = pairs[i + 1]
 
-df = pd.DataFrame(long_data)
-ddf = df.drop_duplicates()
-user_movie_matrix = preprocess_data(pd.DataFrame(long_data))
+            if pd.notna(movie) and pd.notna(rating):  # Skip if either is NaN
+                long_data.append({"User": user, "Movie": movie, "Rating": float(rating)})
 
-# Cluster users
-kmeans = cluster_users(user_movie_matrix, n_clusters=5)
+    df = pd.DataFrame(long_data)
+    ddf = df.drop_duplicates()
+    user_movie_matrix = preprocess_data(pd.DataFrame(long_data))
 
-# Recommend for a specific user (e.g., user_id=0)
-user_id = 0  # Change as needed
-recommendations, anti_recommendations = recommend_movies(user_movie_matrix, kmeans, user_id)
+    # Cluster users
+    kmeans = cluster_users(user_movie_matrix, n_clusters=5)
 
-print("Recommendations:", recommendations)
-print("Anti-recommendations:", anti_recommendations)
+    # Recommend for a specific user (e.g., user_id=0)
+    user_id = 0  # Change as needed
+    recommendations, anti_recommendations = recommend_movies(user_movie_matrix, kmeans, user_id)
+
+    return {
+        "recomendations": recommendations,
+        "anti-recommendations": anti_recommendations
+    }
