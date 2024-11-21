@@ -48,22 +48,25 @@ def recommend_movies(user_movie_matrix, kmeans, user_id, top_n=5):
 # Example usage
 # Assuming `data` is your loaded and reshaped DataFrame:
 data = pd.read_csv("resources/questionary_list.csv", header=None)
+count = data.shape[0]
 long_data = []
 
 # Iterate over each row to parse user and movie-rating pairs
 for _, row in data.iterrows():
-    user = row.iloc[1]  # The second column contains the user's name
-    pairs = row.iloc[2:]  # Skip the first two columns for movie-rating pairs
+    user = row.iloc[0]  # The second column contains the user's name
+    pairs = row.iloc[1:]  # Skip the first two columns for movie-rating pairs
 
-    # Process movie-rating pairs
-    for i in range(2, len(pairs), 2):  # Step by 2 to get movie-rating pairs
+    #Process movie-rating pairs
+    for i in range(count - 1, len(pairs), 2):  # Step by 2 to get movie-rating pairs
         movie = pairs[i]
         rating = pairs[i + 1]
 
         if pd.notna(movie) and pd.notna(rating):  # Skip if either is NaN
             long_data.append({"User": user, "Movie": movie, "Rating": float(rating)})
 
-user_movie_matrix = preprocess_data(long_data)
+df = pd.DataFrame(long_data)
+ddf = df.drop_duplicates()
+user_movie_matrix = preprocess_data(pd.DataFrame(long_data))
 
 # Cluster users
 kmeans = cluster_users(user_movie_matrix, n_clusters=5)
