@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances
+import sys
 
 def preprocess_data(data):
     """
@@ -60,7 +61,7 @@ def cluster_users(user_movie_matrix, n_clusters=5, metric="euclidean"):
     """
     if metric != "euclidean":
         dist_matrix = pairwise_distances(user_movie_matrix, metric=metric)
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42, precompute_distances=False)
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42)
         kmeans.fit(dist_matrix)
     else:
         kmeans = KMeans(n_clusters=n_clusters, random_state=42)
@@ -170,8 +171,14 @@ def getRecomendations(user_id = 0):
     data = pd.read_csv("resources/questionary_list.csv", header=None)
     parsed_data = parseData(data)
     user_movie_matrix = preprocess_data(pd.DataFrame(parsed_data))
+    metric = "euclidean"
+    if len(sys.argv) > 1:
+        metric = sys.argv[1]
+        print(f"Using: {metric} metric")
+    else:
+        print("No metric provided, using euclidean")
 
-    kmeans = cluster_users(user_movie_matrix, n_clusters=5)
+    kmeans = cluster_users(user_movie_matrix, 5, metric)
 
     recommendations, anti_recommendations = recommend_movies(user_movie_matrix, kmeans, user_id)
 

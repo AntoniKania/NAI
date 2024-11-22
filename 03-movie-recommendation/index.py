@@ -1,21 +1,27 @@
 from recomendation_engine import getRecomendations
-from data_fetcher import get_movie_object, get_movie_genres
+from user_input import showRecomended, showNotRecomended
 
-data = getRecomendations(6)
+if __name__ == "__main__":
+    """
+    Main script entry point for generating movie recommendations and anti-recommendations.
 
-def showRecomended(data):
-    print("Filmy rekomendowane: \n")
-    for title in data:
-        metadata = get_movie_object(title)
-        genres = get_movie_genres(metadata['id'], metadata['media_type'])
-        print(title)
-        print("Gatunki: " + ','.join(genres))
-        print("Opis: " + metadata['overview'])
-        print()
+    This script prompts the user for their ID, retrieves movie recommendations 
+    and anti-recommendations based on users in database viewing history,
+    and displays them.
 
-def showNotRecomended(data):
-    print("Filmy odradzane: \n")
-    print(', '.join(data))
+    It uses argv parameters that let select metric by user that is used in
+    recommendation engine
 
-showRecomended(data['recomendations'])
-showNotRecomended(data['anti-recommendations'])
+    1. The script runs in a loop, asking the user to input their user ID.
+    2. If the input is not a valid integer, it displays an error message and prompts again.
+    3. Once a valid user ID is provided:
+        - Calls the `getRecomendations` function to retrieve recommendations 
+          and anti-recommendations for the specified user.
+        - Calls `showRecomended` to display the recommended movies.
+        - Calls `showNotRecomended` to display the anti-recommended movies.
+    4. The script terminates after successfully displaying the results.
+    """
+    user_id = int(input("Podaj swoje id w bazie obejrzanych filmów: "))
+    data = getRecomendations(user_id)
+    showRecomended(data['recomendations'])
+    showNotRecomended(data['anti-recommendations'])
