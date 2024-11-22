@@ -73,7 +73,7 @@ def getRecomendations(user_id=0):
     kmeans = cluster_users(user_movie_matrix, n_clusters=5)
 
     # Recommend for a specific user (e.g., user_id=0)
-    user_id = 0  # Change as needed
+    # user_id = 0  # Change as needed
     recommendations, anti_recommendations = recommend_movies(user_movie_matrix, kmeans, user_id)
 
     return {

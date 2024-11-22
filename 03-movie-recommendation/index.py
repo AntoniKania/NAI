@@ -1,7 +1,7 @@
 from recomendation_engine import getRecomendations
 from data_fetcher import get_movie_object, get_movie_genres
 
-data = getRecomendations()
+data = getRecomendations(6)
 
 def showRecomended(data):
     print("Filmy rekomendowane: \n")
