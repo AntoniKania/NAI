@@ -6,6 +6,8 @@ This repository contains various projects developed for AI Tools classes. Each i
 
 1. [Chomp](./two-player-game-with-ai/README.md) - two player game that can be played against AI
 2. [Smart irrigation system](./smart-irrigation-system/README.md) - irrigation system using Fuzzy Logic
+3. [Movies recommendation engine](./03-movie-recommendation/README.md) - Movie recommendation engine based on clustering algorithm
+4. [Clustering with Decision Trees and Support Vector Matrix](./03-movie-recommendation/README.md) - Movie recommendation engine based on clustering algorithm
 
 ## How to run
 

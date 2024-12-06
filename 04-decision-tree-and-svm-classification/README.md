@@ -2,7 +2,7 @@
 
 Authors: Antoni Kania, Rafał Sojecki
 
-Application solve problem of making recomendations based on previously rated movies by different users. It uses clustering algorithm (k-means) with different, user selected metric to achive this goal
+Application solve problem of making recommendations based on previously rated movies by different users. It uses clustering algorithm (k-means) with different, user selected metric to achieve this goal
 
 ## Usage
 
@@ -15,13 +15,13 @@ Application solve problem of making recomendations based on previously rated mov
     python index.py
     ```
     [Non-default kernel](####User-selectable-kernel-for-svn)
-Aplication will run all functionality described in [features](Features) for each dataset in order.
+Application will run all functionality described in [features](Features) for each dataset in order.
 
 ## Features
 
 #### 3 datasets
 ##### Job satisfaction survey
-Survery made by ourselfs - 31 people answered question on ther job satisfaction, age, education level. Csv file with result prepared to make easy implementacion in code [data](resources/job-satisfaction-survey.csv)
+Survey made by ourselves - 31 people answered question on their job satisfaction, age, education level. Csv file with result prepared to make easy implementation in code [data](resources/job-satisfaction-survey.csv)
 
 EducationLevel legend:
 1 Elementary school graduate
@@ -31,19 +31,19 @@ EducationLevel legend:
 5 Master
 6 Doctorate
 
-We calculating prolability of be satisfied at work
+Classification if person is satisfied with their job
 
-Due to small amout of surveyed people - accuracy level of predictions is low (~40%)
+Due to small amount of surveyed people - accuracy level of predictions is low (~40%)
 
 ##### Pima indians diabetes
 Dataset fetched from https://machinelearningmastery.com/standard-machine-learning-datasets/
 
-We calculating prolability of having diabetes
+Classification if person has diabetes
 
-##### Titanic pasangers list
+##### Titanic passengers list
 Dataset fetched from https://github.com/datasciencedojo/datasets/blob/master/titanic.csv
 
-We calculating prolability of surviving disaster
+Classification if person survives the accident
 
 #### Visualisation of the decision tree and svn.
 ![decision_tree](media/decision_tree.png)
@@ -74,7 +74,7 @@ SVM Accuracy: 0.42857142857142855
 weighted avg       0.55      0.43      0.45         7
 ```
 
-#### Clasifiers for example data
+#### Classifiers invocations with example data
 Printed on standard output
 ```
 Decision tree prediction for person1: Isn't happy
