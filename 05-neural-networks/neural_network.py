@@ -5,6 +5,7 @@ import sys
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
 
 
 def load_fashion_mnist():
@@ -118,6 +119,31 @@ def invoke_model_with_pima_indians_data(model):
     print("Neural network model prediction for person2: " + (
         "Has" if model.predict(pd.DataFrame(person2)) == 1 else "Doesn't have") + " diabetes")
 
+def confustionMatrix(model, X_test):
+    # Get predictions for the test dataset
+    y_pred_probabilities = model.predict(X_test)  # Predict probabilities for all samples
+    y_pred = np.argmax(y_pred_probabilities, axis=1)
+    
+    # Convert true labels (one-hot) to class indices if needed
+    if len(y_test.shape) > 1:  # Check if labels are one-hot encoded
+        y_true = np.argmax(y_test, axis=1)
+    else:
+        y_true = y_test
+
+    print("y_test shape:", y_test.shape)
+    print("y_true shape:", y_true.shape)
+
+    print("y_pred_probabilities shape:", y_pred_probabilities.shape)
+    print("y_pred shape:", y_pred.shape)
+    # Create the confusion matrix
+    cm = confusion_matrix(y_true, y_pred)
+    labels = [f"Class {i}" for i in range(num_classes)]  # Optional: Modify with actual class names
+
+    # Display the confusion matrix
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
+    disp.plot(cmap=plt.cm.Blues, xticks_rotation="vertical")
+    plt.title("Confusion Matrix")
+    plt.show()
 
 if __name__ == '__main__':
     dataset_type = sys.argv[1]
@@ -133,12 +159,14 @@ if __name__ == '__main__':
         invoke_model_with_pima_indians_data(model)
     elif dataset_type == 'cifar10':
         (X_train, y_train), (X_test, y_test), input_shape, num_classes = load_cifar10()
-        y_train = tf.keras.utils.to_categorical(y_train, num_classes)
-        y_test = tf.keras.utils.to_categorical(y_test, num_classes)
+        # y_train = tf.keras.utils.to_categorical(y_train, num_classes)
+        # y_test = tf.keras.utils.to_categorical(y_test, num_classes)
+        print("X_test shape:", X_test.shape)  #
         model = create_and_train_model_cifar10(input_shape, num_classes, X_train, y_train)
         model.save(model_filename)
         model.evaluate(X_test, y_test)
         invoke_model_with_cifar10_data(model, X_test[0:1])
+        confustionMatrix(model, X_test)
     else:
         raise ValueError("Unknown dataset type. Use 'fashion_mnist', 'pima', or 'cifar10'.")
 
