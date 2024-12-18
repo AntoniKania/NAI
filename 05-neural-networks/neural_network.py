@@ -44,6 +44,23 @@ def load_cifar10():
     num_classes = 10  # 10 classes in CIFAR-10
     return (X_train, y_train), (X_test, y_test), input_shape, num_classes
 
+def create_and_train_model_cifar10(input_shape, num_classes, X_train, y_train):
+    """Create and train a model with the given input shape and output classes."""
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.InputLayer(input_shape=input_shape),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(num_classes, activation='softmax' if num_classes > 1 else 'sigmoid')
+    ])
+
+    loss = 'categorical_crossentropy' if len(y_train.shape) == 2 else 'sparse_categorical_crossentropy'
+    
+    model.compile(optimizer='adam',
+                  loss=loss,
+                  metrics=['accuracy'])
+    model.fit(X_train, y_train, epochs=10, batch_size=32)
+    return model
+
 
 def create_and_train_model(input_shape, num_classes, X_train, y_train):
     """Create and train a model with the given input shape and output classes."""
@@ -57,6 +74,12 @@ def create_and_train_model(input_shape, num_classes, X_train, y_train):
                   metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=10)
     return model
+
+def invoke_model_with_cifar10_data(model, sample_image):
+    predictions = model.predict(sample_image)
+    predicted_class = np.argmax(predictions)
+    print(predictions)
+    print(f"Predicted Class: {predicted_class}")
 
 def invoke_model_with_pima_indians_data(model):
     """
@@ -104,20 +127,32 @@ if __name__ == '__main__':
         (X_train, y_train), (X_test, y_test), input_shape, num_classes = load_fashion_mnist()
     elif dataset_type == 'pima':
         (X_train, y_train), (X_test, y_test), input_shape, num_classes = load_pima()
+        model = create_and_train_model(input_shape, num_classes, X_train, y_train)
+        model.save(model_filename)
+        model.evaluate(X_test, y_test)
+        invoke_model_with_pima_indians_data(model)
     elif dataset_type == 'cifar10':
         (X_train, y_train), (X_test, y_test), input_shape, num_classes = load_cifar10()
+        y_train = tf.keras.utils.to_categorical(y_train, num_classes)
+        y_test = tf.keras.utils.to_categorical(y_test, num_classes)
+        model = create_and_train_model_cifar10(input_shape, num_classes, X_train, y_train)
+        model.save(model_filename)
+        model.evaluate(X_test, y_test)
+        invoke_model_with_cifar10_data(model, X_test[0:1])
     else:
         raise ValueError("Unknown dataset type. Use 'fashion_mnist', 'pima', or 'cifar10'.")
 
-    if os.path.isfile(model_filename):
-        model = tf.keras.models.load_model(model_filename)
-    else:
-        model = create_and_train_model(input_shape, num_classes, X_train, y_train)
-        model.save(model_filename)
+    # Convert labels to one-hot encoding for classification datasets
+        
 
-    model.evaluate(X_test, y_test)
+    # if os.path.isfile(model_filename):
+    #     model = tf.keras.models.load_model(model_filename)
+    # else:
+    #     model = create_and_train_model(input_shape, num_classes, X_train, y_train)
+    #     model.save(model_filename)
 
-    invoke_model_with_pima_indians_data(model)
+
+   
 
     if dataset_type in ['pima', 'cifar10']:
         print(f"Model training and evaluation completed for {dataset_type} dataset.")

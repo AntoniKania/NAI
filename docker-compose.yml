@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  python:
+    build: .
+    container_name: python_container
+    ports:
+      - "8000:8000" # Example port mapping, adjust as needed
+    volumes:
+      - ./05-neural-networks:/usr/src/app # Map a local folder to the container for persistence
+    working_dir: /usr/src/app # Set the working directory
+    command: python3 neural_network.py cifar10
+    environment:
+      - TZ=UTC # Set the timezone if needed
+    restart: unless-stopped
