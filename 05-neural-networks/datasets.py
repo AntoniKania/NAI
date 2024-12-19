@@ -9,7 +9,9 @@ from PIL import Image
 
 def cats_breeds(img_size=(128, 128), batch_size=32):
     """Load and preprocess the Cats breed dataset."""
-    data_dir = kagglehub.dataset_download("yapwh1208/cats-breed-dataset")
+    img_size=(128, 128)
+    data = kagglehub.dataset_download("yapwh1208/cats-breed-dataset")
+    data_dir = data + '/cat_v1'
     # data_dir = '/root/.cache/kagglehub/datasets/yapwh1208/cats-breed-dataset/versions/1/cat_v1' - use for not downoading each time data
     if not os.path.exists(data_dir):
         raise ValueError(f"Dataset directory '{data_dir}' does not exist.")
