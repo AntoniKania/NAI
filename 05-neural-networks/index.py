@@ -9,6 +9,13 @@ from classifiers import invoke_pima_model_with_sample_data, invoke_cifar10_model
 from collections import Counter
 
 if __name__ == '__main__':
+    """
+    Orchestrates the process of training and evaluating neuronal networks
+    on multiple dataset.
+    
+    Selection by sys arg, described in README.md. In 
+    confusion_matrix implementation in pima datasets.
+    """
     dataset_type = sys.argv[1]
     model_filename = f'{dataset_type}_model.keras'
 
@@ -41,6 +48,6 @@ if __name__ == '__main__':
         model.evaluate(X_test, y_test)
         invoke_cifar10_model_with_sample_data(model, X_test[0:1])
     else:
-        raise ValueError("Unknown dataset type. Use 'fashion_mnist', 'pima', or 'cifar10'.")
+        raise ValueError("Unknown dataset type. Use 'fashion_mnist', 'pima', 'cats', or 'cifar10'.")
 
     print(f"Model training and evaluation completed for {dataset_type} dataset.")

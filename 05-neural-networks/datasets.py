@@ -6,12 +6,14 @@ import kagglehub
 import os
 from PIL import Image
 
+
 def cats_breeds(img_size=(128, 128), batch_size=32):
+    """Load and preprocess the Cats breed dataset."""
     data_dir = kagglehub.dataset_download("yapwh1208/cats-breed-dataset")
     # data_dir = '/root/.cache/kagglehub/datasets/yapwh1208/cats-breed-dataset/versions/1/cat_v1' - use for not downoading each time data
     if not os.path.exists(data_dir):
         raise ValueError(f"Dataset directory '{data_dir}' does not exist.")
-    print(data_dir)
+
     X = []
     y = []
     class_names = []
@@ -31,26 +33,18 @@ def cats_breeds(img_size=(128, 128), batch_size=32):
                 except Exception as e:
                     print(f"Error loading image {img_path}: {e}")
     
-    # Convert lists to NumPy arrays
     X = np.array(X, dtype='float32')
     y = np.array(y, dtype='int')
-
-    print(f"Total images loaded: {len(X)}")
-    print(f"Class distribution: {np.bincount(y)}")
     
-    # Split into training and testing datasets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-    # One-hot encode labels
     num_classes = len(class_names)
     y_train = tf.keras.utils.to_categorical(y_train, num_classes=num_classes)
     y_test = tf.keras.utils.to_categorical(y_test, num_classes=num_classes)
 
-    # Determine input shape
-    input_shape = (img_size[0], img_size[1], 3)  # Assuming RGB images
+    input_shape = (img_size[0], img_size[1], 3)  # RGB images
 
     return (X_train, y_train), (X_test, y_test), input_shape, num_classes
-
 
 def fashion_mnist():
     """Load and preprocess the Fashion-MNIST dataset."""
@@ -86,5 +80,5 @@ def cifar10():
     X_train, X_test = X_train / 255.0, X_test / 255.0
     y_train, y_test = y_train.flatten(), y_test.flatten()
     input_shape = (32, 32, 3)  # 32x32px RGB
-    num_classes = 10  # 10 classes in CIFAR-10
+    num_classes = 10
     return (X_train, y_train), (X_test, y_test), input_shape, num_classes
