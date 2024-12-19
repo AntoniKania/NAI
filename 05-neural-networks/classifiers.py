@@ -3,29 +3,28 @@ import pandas as pd
 import tensorflow as tf
 
 def invoke_cats_model_with_sample_data(model):
+    """
+    Uses given machine learning models to make predictions of cat breed
+    on the image. Loads hard-coded image from resources folder. Preprocess 
+    it
 
+    Prints result of prediction
+
+    Parameters:
+    model : tf.keras.Model
+        A trained neural network model for predicting cat breed.
+    """
     class_labels = ["Bengal", "Domestic shorthair", "Maine coon", "Ragdoll", "Siamese"]
     image_path = './resources/random.jpg'
     try:
-        # Load the image with the target size matching the model's input shape
+        #pre-procesing image
         img = tf.keras.preprocessing.image.load_img(image_path, target_size=(model.input_shape[1], model.input_shape[2]))
-
-        # Convert the image to a numpy array
         img_array = tf.keras.preprocessing.image.img_to_array(img)
-
-        # Expand dimensions to match the model's expected input (batch size, height, width, channels)
         img_array = np.expand_dims(img_array, axis=0)
-
-        # Normalize the image (optional, depending on your model's preprocessing)
         img_array = img_array / 255.0
 
-        # Invoke the model with the preprocessed image
         predictions = model.predict(img_array)
-
-        if model.output_shape[-1] == 1:  # Binary classification
-            predicted_label = class_labels[int(predictions[0] > 0.5)]
-        else:  # Multi-class classification
-            predicted_label = class_labels[np.argmax(predictions, axis=1)[0]]
+        predicted_label = class_labels[np.argmax(predictions, axis=1)[0]]
 
         print(predictions)
         print(f"Predicted Class: {predicted_label}")
@@ -33,9 +32,17 @@ def invoke_cats_model_with_sample_data(model):
         print(f"An error occurred while processing the image: {e}")
         return None
 
-
-
 def invoke_cifar10_model_with_sample_data(model, sample_image):
+    """
+    Uses given machine learning models to make predictions of what is
+    on the image.
+
+    Prints result of prediction
+
+    Parameters:
+    model : tf.keras.Model
+        A trained neural network model for predicting diabetes.
+    """
     cifar10_labels = [
         "airplane", "automobile", "bird", "cat", "deer", 
         "dog", "frog", "horse", "ship", "truck"
