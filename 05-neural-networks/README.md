@@ -37,8 +37,9 @@ Bigger neural networks have better accuracy than smaller ones, but the learning 
 
  ![256](resources/random.jpg)
 ### cifar10
- Trained network, To test it we used first image of dataset to classify it.
- ![cifar10](media/cifar10.png)
+[source data](https://www.cs.toronto.edu/~kriz/cifar.html)
+To test it we used first image of dataset to classify it.
+![cifar10](media/cifar10.png)
 ### pima
 
 #### Accuracy comparison with decision tree and SVM for pima dataset
