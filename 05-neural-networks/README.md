@@ -20,10 +20,10 @@ Application will run all functionality described in [models](Models) for each da
 ## Models
 
 ### fashion_mnist
-
+![16](media/mnist.png)
 ### cats
 
-On this network we compared ussage of 2 sizes of neural networks (by neuron count)
+On this network we compared ussage of 2 sizes of neural networks (by neuron count). [Used dataset](https://www.kaggle.com/datasets/yapwh1208/cats-breed-dataset/data)
 
 #### 16 neurons
 
@@ -37,6 +37,7 @@ Bigger neural networks have better accuracy than smaller ones, but the learning 
 
  ![256](resources/random.jpg)
 ### cifar10
+ Trained network, To test it we used first image of dataset to classify it.
  ![cifar10](media/cifar10.png)
 ### pima
 
