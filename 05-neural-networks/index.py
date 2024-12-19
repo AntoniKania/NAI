@@ -38,7 +38,7 @@ if __name__ == '__main__':
         model = get_trained_pima_model(input_shape, num_classes, X_train, y_train)
         model.save(model_filename)
         model.evaluate(X_test, y_test)
-        print_confusion_matrix(model, X_test, y_test, num_classes)
+        print_confusion_matrix(model, X_test, y_test)
         invoke_pima_model_with_sample_data(model)
         
     elif dataset_type == 'cifar10':
