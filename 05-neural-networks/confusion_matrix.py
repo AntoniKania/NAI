@@ -1,4 +1,3 @@
-import numpy as np
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
@@ -7,7 +6,7 @@ def print_confusion_matrix(model, X_test, y_test):
         Creates the confusion matrix and display it
 
         Parameters:
-            input_shape (tuple): The shape of the input data, e.g., (8,) for the 8 features in the Pima dataset.
+            model (tf.keras.Model): Trained model that is used for predictions.
             X_test (numpy.ndarray): Test input data, a 2D array with shape (num_samples, num_features).
             y_test (numpy.ndarray): Labels, either a 1D array of integers (binary labels).
     """

@@ -23,7 +23,7 @@ Application will run all functionality described in [models](Models) for each da
 ![16](media/mnist.png)
 ### cats
 
-On this network we compared ussage of 2 sizes of neural networks (by neuron count). [Used dataset](https://www.kaggle.com/datasets/yapwh1208/cats-breed-dataset/data)
+On this network we compared usage of 2 sizes of neural networks (by neuron count). [Used dataset](https://www.kaggle.com/datasets/yapwh1208/cats-breed-dataset/data)
 
 #### 16 neurons
 
