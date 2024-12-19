@@ -53,3 +53,6 @@ To test it we used first image of dataset to classify it.
 
 ![decision_tree](media/accuracy_pima_svm.png)
 
+#### Confusion Matrix for pima dataset
+
+![confusion_matrix](media/confusion_matrix.png)
