@@ -40,3 +40,7 @@ sudo apt install xdotool
 ```
 - The system resets gesture recognition when the index finger is not extended to prevent repeated actions.
 
+## Demo
+_mp4 file with audio is located under `./media/computer_vision_gestures_demo.mp4`_
+
+![](./media/computer_vision_gestures_demo.gif)
