@@ -1,3 +1,12 @@
+"""
+This project implements a gesture recognition system using Python, OpenCV, and MediaPipe to control a music player.
+The system detects hand gestures via a webcam and translates them into media control commands.
+
+Authors: Antoni Kania (s29400), Rafał Sojecki (s26286)
+
+Instructions on how to run the game are available in the main README.md file.
+"""
+
 import cv2
 import mediapipe as mp
 import numpy as np
