@@ -9,6 +9,7 @@ This repository contains various projects developed for AI Tools classes. Each i
 3. [Movies recommendation engine](./03-movie-recommendation/README.md) - Movie recommendation engine based on clustering algorithm
 4. [Clustering with Decision Trees and Support Vector Matrix](./04-decision-tree-and-svm-classification/README.md) - Movie recommendation engine based on clustering algorithm
 5. [Neural Networks](./05-neural-networks/README.md) - Neural networks applications for classification problems
+6. [Computer Vision](./06-computer-vision/README.md) - Gesture-Based Music Control
 
 ## How to run
 
